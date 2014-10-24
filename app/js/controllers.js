@@ -2435,6 +2435,11 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       }
     };
 
+    $scope.contactIgnore = function (userID) {
+      AppUsersManager.ignoreContact(userID);
+      updateContacts($scope.search && $scope.search.query || '');
+    };
+
     $scope.submitSelected = function () {
       if ($scope.selectedCount > 0) {
         var selectedUserIDs = [];

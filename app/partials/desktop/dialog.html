@@ -35,7 +35,7 @@
       <div ng-switch-when="true" class="im_dialog_message">
         <span class="im_dialog_message_text" my-i18n="conversation_message_deleted"></span>
       </div>
-      <div ng-switch-default class="im_dialog_message">
+      <div ng-switch-default class="im_dialog_message" ng-if="!dialogMessage.ignored">
         <span class="im_dialog_chat_from_wrap">
           <span
             class="im_dialog_chat_from"

@@ -40,14 +40,17 @@
           <ul ng-switch-default class="contacts_modal_members_list nav nav-pills nav-stacked">
 
             <li class="contacts_modal_contact_wrap clearfix" ng-repeat="contact in contacts | orderBy:'user.sortName' | limitTo: slice.limit track by contact.userID" ng-class="{active: selectedContacts[contact.userID], disabled: disabledContacts[contact.userID]}">
-              <a class="contacts_modal_contact" ng-click="contactSelect(contact.userID)">
+              <a class="contacts_modal_contact pull-left" ng-click="contactSelect(contact.userID)">
 
                 <i ng-if="multiSelect" class="icon icon-contact-tick"></i>
 
                 <div class="contacts_modal_contact_photo pull-left" my-user-photolink="contact.userID" status="true" img-class="contacts_modal_contact_photo"></div>
                 <div class="contacts_modal_contact_name" ng-bind-html="contact.user.rFullName"></div>
                 <div class="contacts_modal_contact_status" my-user-status="::contact.userID"></div>
-
+              </a>
+              <a class="contacts_modal_ignore pull-right" ng-switch="contact.user.ignored" ng-click="contactIgnore(contact.userID)">
+                <span class="contacts_modal_ignored" ng-switch-when="true">unignore</span>
+                <span ng-switch-default>ignore</span>
               </a>
             </li>
 

@@ -17,6 +17,7 @@ angular.module('myApp.services', ['myApp.i18n'])
       contactsFillPromise,
       contactsList,
       contactsIndex = SearchIndexManager.createIndex(),
+      ignoredContacts = [],
       serverTimeOffset = 0;
 
   Storage.get('server_time_offset').then(function (to) {
@@ -42,6 +43,7 @@ angular.module('myApp.services', ['myApp.i18n'])
         SearchIndexManager.indexObject(userID, getUserSearchText(userID), contactsIndex);
       }
 
+      fillIgnoredContacts();
       return contactsList;
     });
   }
@@ -72,6 +74,23 @@ angular.module('myApp.services', ['myApp.i18n'])
       return contactsList;
     });
   };
+
+  function ignoreContact (userID) {
+    Storage.get('ignore').then(function(result) {
+      var ignored = [];
+      if(result)
+        ignored = JSON.parse(result);
+
+      var currentIndex = ignored.indexOf(userID);
+      if(currentIndex == -1)
+        ignored.push(userID);
+      else
+        ignored.splice(currentIndex, 1);
+
+      ignoredContacts = ignored;
+      Storage.set({ignore: JSON.stringify(ignored)});
+    });
+  }
 
   function saveApiUsers (apiUsers) {
     angular.forEach(apiUsers, saveApiUser);
@@ -112,14 +131,23 @@ angular.module('myApp.services', ['myApp.i18n'])
   };
 
   function getUser (id) {
+    if(ignoredContacts.length == 0) fillIgnoredContacts();
     if (angular.isObject(id)) {
       return id;
     }
-    return users[id] || {id: id, deleted: true};
+    var user = users[id] || {id: id, deleted: true};
+    user.ignored = (ignoredContacts.indexOf(id) != -1);
+    return user;
   }
 
   function hasUser(id) {
     return angular.isObject(users[id]);
+  }
+
+  function fillIgnoredContacts() {
+    return Storage.get('ignore').then(function(result) {
+      ignoredContacts = JSON.parse(result);
+    });
   }
 
   function getUserPhoto(id, placeholder) {
@@ -344,6 +372,7 @@ angular.module('myApp.services', ['myApp.i18n'])
     getUserString: getUserString,
     getUserSearchText: getUserSearchText,
     hasUser: hasUser,
+    ignoreContact: ignoreContact,
     importContact: importContact,
     importContacts: importContacts,
     deleteContacts: deleteContacts,
@@ -859,6 +888,10 @@ angular.module('myApp.services', ['myApp.i18n'])
     });
   }
 
+  function isIgnoredMessage (message) {
+    return AppUsersManager.getUser(message.from_id).ignored;
+  }
+
   function fillHistoryStorage (inputPeer, maxID, fullLimit, historyStorage) {
     // console.log('fill history storage', inputPeer, maxID, fullLimit, angular.copy(historyStorage));
     return requestHistory (inputPeer, maxID, fullLimit).then(function (historyResult) {
@@ -875,6 +908,7 @@ angular.module('myApp.services', ['myApp.i18n'])
 
       historyStorage.history.splice(offset, historyStorage.history.length - offset);
       angular.forEach(historyResult.messages, function (message) {
+        message.ignored = isIgnoredMessage(message);
         historyStorage.history.push(message.id);
       });
 
@@ -1244,6 +1278,7 @@ angular.module('myApp.services', ['myApp.i18n'])
 
   function saveMessages (apiMessages) {
     angular.forEach(apiMessages, function (apiMessage) {
+      apiMessage.ignored = isIgnoredMessage(apiMessage);
       apiMessage.unread = apiMessage.flags & 1 ? true : false;
       apiMessage.out = apiMessage.flags & 2 ? true : false;
       messagesStorage[apiMessage.id] = apiMessage;

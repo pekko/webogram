@@ -2234,6 +2234,10 @@ a:hover .icon-twitter {
   color: #000;
   padding: 8px 9px;
   border-radius: 0;
+  min-width: 80%;
+}
+.contacts_modal_members_list a span.contacts_modal_ignored {
+  color: red;
 }
 .contacts_modal_members_list a.contacts_modal_contact:hover,
 .contacts_modal_members_list .active a.contacts_modal_contact,
