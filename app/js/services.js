@@ -146,6 +146,7 @@ angular.module('myApp.services', ['myApp.i18n'])
 
   function fillIgnoredContacts() {
     return Storage.get('ignore').then(function(result) {
+      if(!result) result = "[]";
       ignoredContacts = JSON.parse(result);
     });
   }
