@@ -1881,6 +1881,12 @@ angular.module('myApp.controllers', ['myApp.i18n'])
       });
     };
 
+    $scope.ignoreContact = function() {
+      AppUsersManager.ignoreContact($scope.userID).then(function () {
+        $scope.user = AppUsersManager.getUser($scope.userID);
+      });
+    };
+
     $scope.shareContact = function () {
       PeersSelectService.selectPeer({confirm_type: 'SHARE_CONTACT_PEER'}).then(function (peerString) {
         var peerID = AppPeersManager.getPeerID(peerString);

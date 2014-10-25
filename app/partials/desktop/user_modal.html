@@ -42,6 +42,12 @@
               <li>
                 <a ng-click="flushHistory()" my-i18n="user_modal_delete_chat"></a>
               </li>
+              <li>
+                <a ng-click="ignoreContact()" ng-switch="user.ignored">
+                  <span ng-switch-when="true">Unignore user</span>
+                  <span ng-switch-default>Ignore user</span>
+                </a>
+              </li>
             </ul>
           </div>
 

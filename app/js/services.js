@@ -76,7 +76,7 @@ angular.module('myApp.services', ['myApp.i18n'])
   };
 
   function ignoreContact (userID) {
-    Storage.get('ignore').then(function(result) {
+    return Storage.get('ignore').then(function(result) {
       var ignored = [];
       if(result)
         ignored = JSON.parse(result);
