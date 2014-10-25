@@ -1,8 +1,8 @@
 {
-  "name": "Telegram",
+  "name": "Telegram w/ ignore",
   "description": "Telegram Web App.\nMore info & source code here: https://github.com/zhukov/webogram",
   "version": "0.3.2",
-  "short_name": "Webogram",
+  "short_name": "Webogram-ignore",
   "manifest_version": 2,
   "app": {
     "background": {
